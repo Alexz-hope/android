@@ -1,0 +1,64 @@
+package com.example.projekti;
+
+import android.os.Bundle;
+
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        EditText Imie = findViewById(R.id.Imie);
+        EditText Nazwisko = findViewById(R.id.Nazwisko);
+        EditText Email = findViewById(R.id.Email);
+        EditText Password = findViewById(R.id.Haslo);
+        Button Zarejestruj = findViewById(R.id.Zarejestruj);
+
+
+        Zarejestruj.setOnClickListener(v -> {
+            String imie = Imie.getText().toString().trim();
+            String nazwisko = Nazwisko.getText().toString().trim();
+            String email = Email.getText().toString().trim();
+            String haslo = Password.getText().toString().trim();
+
+            if (imie.isEmpty() || nazwisko.isEmpty() || email.isEmpty() || haslo.isEmpty()) {
+                Toast.makeText(this, " wszystkie pola muszą byc uzuepełnione", Toast.LENGTH_SHORT).show();
+            } else if (!email.contains("@") || !email.contains(".")) {
+                Toast.makeText(this, "Podaj poprawny adres email", Toast.LENGTH_SHORT).show();
+            } else {
+                boolean bigLitera = false;
+                boolean smallLitera = false;
+                boolean znakSpecjalnejtroski = false;
+
+                for (int i = 0; i < haslo.length(); i++) {
+                    char znak = haslo.charAt(i);
+                    if (Character.isUpperCase(znak)) {
+                        bigLitera = true;
+                    }
+                    if (Character.isLowerCase(znak)) {
+                        smallLitera = true;
+                    }
+                    if (!Character.isLetterOrDigit(znak)) {
+                        znakSpecjalnejtroski = true;
+                    }
+                }
+
+                if (haslo.length() < 8 || !bigLitera || !smallLitera || !znakSpecjalnejtroski) {
+                    Toast.makeText(this, "Hasło musi posiadac minimum 8 znaków i dużą literę i małą literę i znak specjalny<3", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Dane są prawidłowe!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+    }
+}
