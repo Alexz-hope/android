@@ -1,0 +1,109 @@
+package com.example.kostek;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Random;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText poleKostek;
+    Button losuj;
+    GridLayout poleKostekk;
+    TextView wynikTextt;
+    Button sortujRosnaco;
+    Button sortujMalejaco;
+
+    int[] wyniki;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        poleKostek = findViewById(R.id.poleKostek);
+        losuj = findViewById(R.id.Losuj);
+        poleKostekk = findViewById(R.id.poleKostekk);
+        wynikTextt = findViewById(R.id.wynikTextt);
+        sortujRosnaco = findViewById(R.id.sortujRosnaco);
+        sortujMalejaco = findViewById(R.id.sortujMalejaco);
+
+        losuj.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tekst = poleKostek.getText().toString();
+                if (tekst.isEmpty()) return;
+
+                int liczba = Integer.parseInt(tekst);
+                wyniki = new int[liczba];
+                Random rand = new Random();
+
+                for (int i = 0; i < liczba; i++) {
+                    wyniki[i] = rand.nextInt(6) + 1;
+                }
+
+                wyswietlWyniki();
+            }
+        });
+
+        sortujRosnaco.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (wyniki == null) return;
+
+                sortuj(true);
+                wyswietlWyniki();
+            }
+        });
+
+        sortujMalejaco.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (wyniki == null) return;
+
+                sortuj(false);
+                wyswietlWyniki();
+            }
+        });
+    }
+
+    private void sortuj(boolean rosnaco) {
+        for (int i = 0; i < wyniki.length - 1; i++) {
+            for (int j = 0; j < wyniki.length - i - 1; j++) {
+                boolean warunek = rosnaco ? (wyniki[j] > wyniki[j + 1]) : (wyniki[j] < wyniki[j + 1]);
+                if (warunek) {
+                    int temp = wyniki[j];
+                    wyniki[j] = wyniki[j + 1];
+                    wyniki[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    private void wyswietlWyniki() {
+        poleKostekk.removeAllViews();
+        poleKostekk.setColumnCount(3);
+        int suma = 0;
+
+        String tekstWynikow = "Kostki: ";
+
+        for (int i = 0; i < wyniki.length; i++) {
+            suma += wyniki[i];
+            tekstWynikow += wyniki[i] + " ";
+
+            TextView tv = new TextView(MainActivity.this);
+            tv.setText("[" + wyniki[i] + "]");
+            tv.setTextSize(24);
+            tv.setPadding(20, 20, 20, 20);
+            poleKostekk.addView(tv);
+        }
+
+        wynikTextt.setText(tekstWynikow + "\nSuma: " + suma);
+    }
+}
